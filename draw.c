@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include "ml6.h"
 #include "display.h"
@@ -15,113 +16,160 @@ void fill_polygon(double x0, double x1, double x2,
 		  screen s, color c){
   
   double topy, midy, boty, topx, midx, botx;
-  if (y0 > y1){
-    
-    if (y0 > y2){
-      topy = y0;
-      topx = x0;
-      
-      if( y1 > y2){
-	midy = y1;
-	midx = x1;
-	boty = y2;
-	botx = x2;
-      }
-      
-      else{
-	midy = y2;
-	midx = x2;
-	boty = y1;
-	botx = x1;
-      }
+
+  double yvals[3],xvals[3];
+  yvals[0] = y0;
+  yvals[1] = y1;
+  yvals[2] = y2;
+  xvals[0] = x0;
+  xvals[1] = x1;
+  xvals[3] = yvals[3] = -800;
+  int g;
+  xvals[2] = x2;
+  // for (g = 0; g <= 3; g++)
+  //      printf("array values: %f %f\n",xvals[g],yvals[g]);
+  int w,j,pos;
+  
+  w = 0;
+  while( w < 3){
+    pos = 0;
+    for(j = 1;j < 4; j++){
+      if (yvals[j] >yvals[j-1])
+	pos = j;
     }
-    
-    else {
-      topy = y2;
-      topx = x2;
-      
-      if (y0 >y1){
-	midy = y0;
-	midx = x0;
-	boty = y1;
-	botx = x1;
-      }
-      
-      else {
- 	midy = y1;
-	midx = x1;
-	boty = y0;
-	botx = x0;
-      }
+    if (w == 0){
+      topy = yvals[pos];
+      topx = xvals[pos];
     }
+    if (w == 1){
+      midy = yvals[pos];
+      midx = xvals[pos];
+    }
+    if (w == 2){
+      boty = yvals[pos];
+      botx = xvals[pos];
+    }
+    yvals[pos] = xvals[pos] = -800.00;
+    int y;
+    //   for (y = 0; y <= 3; y++)
+      //    printf("array values: %f %f\n",xvals[y],yvals[y]);
+    w++;
   }
-  else{
-    if (y1 > y2){
-      topy = y1;
-      topx = x1;
-      if (y0 > y2){
-	midy = y0;
-	midx = x0;
-	boty = y2;
-	botx = x2;
-      }
-      else {
-	midy = y2;
-	midx = x2;
-	boty = y0;
-	botx = x0;
-      }
-    }
-   
-    else{
-      topy = y2;
-      topx = x2;
-      if (y0 > y1){
-	midy = y0;
-	midx = x0;
-	boty = y1;
-	botx = x1;
-      }
-      else{
-	midy = y1;
-	midx = x1;
-	boty = y0;
-	botx = x0;
-      }
-    }
-  }
+  //  printf("poly values: %f %f %f %f %f %f\n", topx, topy, midx, midy,botx,boty);
+  
+  double x00,x01;
+  double m0,m1,m2;
+  x00 = x01 = botx;
+  if (topy == boty)
+    m0 = 0;
+  else
+    m0 = (topx - botx)/(topy - boty);
+  if (midy == boty)
+    m1 = 0;
+  else
+    m1 = (midx - botx)/(midy - boty);
+  if (midy == topy)
+    m2 = 0;
+  else
+    m2 = (midx - topx)/(midy - topy);
+  if (isnan(m0))
+    m0 = 0;
+  if ( isnan(m1))
+    m1 = 0;
+  if ( isnan(m2))
+    m2 = 0;
+
+  
+  //  if (y0 > y1){
+  //  
+  //if (y0 > y2){
+  //  topy = y0;
+  //  topx = x0;
+  //  
+  //  if( y1 > y2){
+  //	midy = y1;
+  //	midx = x1;
+  //	boty = y2;
+  //	botx = x2;
+  //  }
+  //  
+  //  else{
+  //	midy = y2;
+  //	midx = x2;
+  //	boty = y1;
+  //	botx = x1;
+  //
+  //   }
+  //}
+  //
+  //else {
+  //  topy = y2;
+  //  topx = x2;
+  //  
+  //  if (y0 >y1){
+  //	midy = y0;
+  //	midx = x0;
+  //	boty = y1;
+  //	botx = x1;
+  //  }
+  //  
+  //  else {
+  //	midy = y1;
+  //	midx = x1;
+  //	boty = y0;
+  //	botx = x0;
+  //  }
+  //}
+  //}
+  //else if (y1 > y2){
+  //  topy = y1;
+  // topx = x1;
+  //  if (y0 > y2){
+  //	midy = y0;
+  //	midx = x0;
+  ///	boty = y2;
+  //	botx = x2;
+  //  }
+  // else {
+  //	midy = y2;
+  //	midx = x2;
+  //	boty = y0;
+  //	botx = x0;
+  //  }
+  //}
+  // 
+  //else{
+  // topy = y2;
+  // topx = x2;
+  //  if (y0 > y1){
+  //  midy = y0;
+  ///  midx = x0;
+  // boty = y1;
+  //  botx = x1;
+  //}
+  //else{
+  //  midy = y1;
+  //  midx = x1;
+  //  boty = y0;
+  //  botx = x0;
+  //}
+  //}
+
+  
 
   int i;
+
   for (i = boty; i <= topy; i++){
-    double x0,y0,x1,y1;
-    y0 = y1 = i;
-    double m0;
-    if (topy == boty)
-      x0 = topx;
-    else{
-      m0 = (topx - botx)/(topy - boty);
-      x0 = (y0 - topy)/m0 + topx;
-    }
-    double m1;
-    if (i <= midy){
-      if (midy == boty)
-	m1 = midx;
-      else{ 
-	m1 = (midx - botx)/(midy - boty);
-	x1 = (y1 - midy)/m1 + midx;
-      }
-    }
-    else{
-      if (topy == midy)
-	x1 = midx;
-      else{
-	m1 = (topx - midx)/(topy - midy);
-	x1 = (y1 - midy)/m1 + midx;
-      }
-    }
-    
-    printf("Coord values: %f %f %f %f\n",x0,y0,x1,y1);
-    draw_line(x0,y0,x1,y1,s,c);
+  
+    //   printf("Slope Values: %f %f %f\n",m0,m1,m2);
+    //    printf("Coord values: %f %d %f %d\n",x00,i,x01,i);
+    draw_line(x00,i,x01,i,s,c);
+    x00 += m0;
+    if (i <= midy)
+      x01 += m1;
+    else
+      x01 += m2;
+      
   }
     
 
@@ -209,16 +257,16 @@ void draw_polygons( struct matrix *polygons, screen s, color c ) {
 		 polygons->m[0][point+2],
 		 polygons->m[1][point+2],
 		 s, c);
-      if (point % 2 == 0){
+      //   if (point % 2 == 0){
       c.red = 255;
       fill_polygon( polygons->m[0][point],
-		    polygons->m[1][point],
 		    polygons->m[0][point+1],
-		    polygons->m[1][point+1],
 		    polygons->m[0][point+2],
+		    polygons->m[1][point],
+		    polygons->m[1][point+1],
 		    polygons->m[1][point+2],
 		    s, c);
-      }
+      //   }
     }
    
   }

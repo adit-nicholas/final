@@ -1,0 +1,9 @@
+push
+move 100 100 100
+rotate y 75
+rotate x -40
+rotate z 45
+box 0 200 50 200 250 100
+pop
+display
+save box.png
